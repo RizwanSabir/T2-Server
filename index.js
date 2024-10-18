@@ -5,6 +5,7 @@ const cors = require("cors");
 const connection = require("./db");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
+const CustomerService = require("./routes/Support/Support");
 const BrandSignUp = require("./Api/Brand/SignUp");
 const InfluencerSignUp = require("./Api/Influencer/SignUp");
 const AuidenceSignUp = require("./Api/Auidence/SignUp");
@@ -20,7 +21,8 @@ app.use(express.json());
 
 const allowedOrigins = [
   'http://influencerharbor.live',
-  'http://13.49.254.91'
+  'http://13.49.254.91',
+  'http://localhost'
 ];
 
 app.use(cors({
@@ -46,6 +48,9 @@ app.use('/api/users/Auidence/CompleteProfile', AuidenceSignUp)
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+
+
+app.use('/CustomerService',CustomerService)
 
 
 app.get('/status', (req, res) => {
