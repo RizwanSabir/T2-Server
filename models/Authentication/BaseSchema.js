@@ -12,6 +12,11 @@ const brandSchema = new Schema({
         type: String,
         unique: true,  // Ensure brand name is unique
     },
+    brandUserName: {
+        type: String,
+        unique: true,  // Ensure brand name is unique
+    },
+	
     basicDetails: {
         type: Object,  // Object to hold key-value pairs
         default: {},   // Default to an empty object if not provided

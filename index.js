@@ -15,6 +15,7 @@ const { authenticateToken } = require("./middleware/authTokenVerification");
 const multer = require("multer");
 const path = require('path');
 const fs = require('fs');
+const { User } = require("./models/Support/Issues");
 
 // middlewares
 app.use(express.json());
@@ -50,9 +51,23 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
 
-app.use('/CustomerService',CustomerService)
+app.use('/Support',CustomerService)
 
 
+
+// Route to handle deleting rows
+app.post('/DeleteRow', async (req, res) => {
+  try {
+    const rowsToDelete = req.body; // Get rows to delete from the request body
+ console.log(rowsToDelete)
+
+
+    res.status(200).send({ message: 'Rows deleted successfully' });
+  } catch (error) {
+    console.error("Error deleting rows:", error);
+    res.status(500).send({ message: 'Error deleting rows' });
+  }
+});
 app.get('/status', (req, res) => {
   res.send('Server is running correctly');
 });

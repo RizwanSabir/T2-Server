@@ -78,10 +78,13 @@ router.post('/create-brand', authenticateToken, upload.single('image'), async (r
 
 router.post('/check-brandName', async (req, res) => {
   const { brandName } = req.body;
+  console.log("body ")
+  console.log(req.body)
 
   try {
     // Check if the brand name exists in the database
-    const brand = await Brand.findOne({ brandName });
+    const brand = await Brand.findOne({ brandName:brandName+"" });
+
     if (brand) {
       // Brand name exists
       return res.status(200).json({ exists: true });
@@ -91,6 +94,30 @@ router.post('/check-brandName', async (req, res) => {
     }
   } catch (error) {
     console.error('Error checking brand name:', error);
+    return res.status(500).json({ error: 'Server error occurred' });
+  }
+});
+
+
+router.post('/check-brandUsername', async (req, res) => {
+  console.log("body user")
+  console.log(req.body)
+  const { brandUserName } = req.body;
+
+  try {
+    // Check if the brand username exists in the database
+    const brand = await Brand.findOne({ brandUserName:brandUserName+"" });
+    console.log("brand Username is")
+    console.log(brand)
+    if (brand) {
+      // Brand username exists, return false
+      return res.status(200).json({ exists: true });
+    } else {
+      // Brand username does not exist, return true
+      return res.status(200).json({ exists: false });
+    }
+  } catch (error) {
+    console.error('Error checking brand username:', error);
     return res.status(500).json({ error: 'Server error occurred' });
   }
 });
