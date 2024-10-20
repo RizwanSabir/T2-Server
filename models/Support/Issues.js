@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// Define the User schema
 const userSchema = new Schema({
     name: {
         type: String,
@@ -12,22 +13,19 @@ const userSchema = new Schema({
         required: true,
     },
     img: {
-        type: String,  // This can store the image path or base64 string
-        required: false,  // Optional image field
+        type: String,  // Optional field to store image path or base64 string
+        required: false,  // Not mandatory
     }
 }, { timestamps: true });  // Automatically adds createdAt and updatedAt fields
 
-const User = mongoose.model('User', userSchema);
+// Create the User model
+const UserSupport = mongoose.model('UserSupport', userSchema);
 
+// Define the Issue schema
 const issueSchema = new Schema({
-    customerServiceID: {
-        type: String,
-        required: true,
-        unique: true,  // Ensure the ID is unique
-    },
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',  // Reference to the User schema
+        ref: 'UserSupport',  // Reference to the User schema
         required: true,
     },
     issue: {
@@ -40,20 +38,20 @@ const issueSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'In Review', 'Resolved', 'In Progress', 'On Hold', 'Open'],  // Ensure status has valid values
+        enum: ['Pending', 'In Review', 'Resolved'],  // Ensure status has valid values
         required: true,
     },
     attachment: {
-        type: String,  // Path to attachment file
+        type: String,  // Optional field for file path
         required: false,
     },
     contractLink: {
-        type: String,  // Path to contract if applicable
+        type: String,  // Optional field for contract link
         required: false,
     }
 }, { timestamps: true });  // Automatically adds createdAt and updatedAt fields
 
+// Create the Issue model
 const Issue = mongoose.model('Issue', issueSchema);
 
-
-module.exports = { User, Issue }
+module.exports = { UserSupport, Issue };

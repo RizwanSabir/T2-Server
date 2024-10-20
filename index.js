@@ -15,7 +15,7 @@ const { authenticateToken } = require("./middleware/authTokenVerification");
 const multer = require("multer");
 const path = require('path');
 const fs = require('fs');
-const { User } = require("./models/Support/Issues");
+const { User, UserSupport, Issue } = require("./models/Support/Issues");
 
 // middlewares
 app.use(express.json());
@@ -70,6 +70,66 @@ app.post('/DeleteRow', async (req, res) => {
 });
 app.get('/status', (req, res) => {
   res.send('Server is running correctly');
+});
+
+
+
+
+// POST route to add a new user
+app.post('/addUser', async (req, res) => {
+  const { name, username, img } = req.body;
+
+  console.log("new user sare")
+console.log(req.body)
+
+
+  // Validate required fields
+  if (!name || !username) {
+      return res.status(400).json({ error: 'Name and username are required.' });
+  }
+ 
+  try {
+      // Create and save the new user
+      const newUser = new UserSupport({
+          name,
+          username,
+          img,  // img can be optional
+      });
+
+      await newUser.save();
+      res.status(201).json({ message: 'User created successfully!', user: newUser });
+  } catch (error) {
+      if (error.code === 11000) {  // Duplicate key error for unique fields
+          res.status(409).json({ error: 'Username already exists.' });
+      } else {
+          res.status(500).json({ error: 'An error occurred while creating the user.' });
+      }
+  }
+});
+
+
+
+app.post('/addIssue', async (req, res) => {
+  try {
+      const { customerServiceID, userId, issue, description, status, attachment, contractLink } = req.body;
+
+      // Create new issue
+      const newIssue = new Issue({
+          userId, 
+          issue, 
+          description, 
+          status, 
+          attachment, 
+          contractLink
+      });
+
+      // Save to the database
+      await newIssue.save();
+      res.status(201).json({ message: 'Issue created successfully', issue: newIssue });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error', error });
+  }
 });
 
 // database connection and server start

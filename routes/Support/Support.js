@@ -1,3 +1,5 @@
+const { Issue } = require("../../models/Support/Issues");
+
 const router = require("express").Router();
 
 
@@ -28,7 +30,7 @@ const Issuestatistics = {
 const issues = [
     { "customerServiceID": "CS001", "userid": "12", "issue":"Contract","description": "Issue with product delivery", "status": "Pending", "attachment": "delivery_issue.pdf", "contractLink": null },
     { "customerServiceID": "CS002", "userid": "13", "issue":"Contract","description": "Unable to login to account", "status": "Resolved", "attachment": null, "contractLink": null },
-    { "customerServiceID": "CS003", "userid": "14", "issue":"Contract","description": "Billing issue for last month", "status": "Pending", "attachment": "billing_issue.pdf", "contractLink": "contracts/billing_contract.pdf" },
+    { "customerServiceID": "CS003", "userid": "14", "issue":"Account","description": "Billing issue for last month", "status": "Pending", "attachment": "billing_issue.pdf", "contractLink": "contracts/billing_contract.pdf" },
     { "customerServiceID": "CS004", "userid": "15", "issue":"Contract","description": "Broken product received", "status": "In Review", "attachment": "broken_product.jpg", "contractLink": null },
     { "customerServiceID": "CS005", "userid": "16", "issue":"Contract","description": "Delayed shipment for contract order", "status": "Pending", "attachment": "shipment_delay.pdf", "contractLink": "contracts/shipment_contract.pdf" },
     { "customerServiceID": "CS006", "userid": "17", "issue":"Contract","description": "Account suspended without notice", "status": "Resolved", "attachment": null, "contractLink": null },
@@ -53,127 +55,106 @@ const users= {
     "12": {
         "name": "Rizwan",
         "username": "@rere",
-        "img": "ss"
+        "img": "https://picsum.photos/20/20"
     },
     "13": {
         "name": "John Smith",
         "username": "@johnsmith",
-        "img": "js"
+        "img": "https://picsum.photos/20/20"
     },
     "14": {
         "name": "Jane Doe",
         "username": "@janedoe",
-        "img": "jd"
+        "img": "https://picsum.photos/20/20"
     },
     "15": {
         "name": "Tom Brown",
         "username": "@tombrown",
-        "img": "tb"
+        "img": "https://picsum.photos/20/20"
     },
     "16": {
         "name": "Sarah Davis",
         "username": "@sarahd",
-        "img": "sd"
+        "img": "https://picsum.photos/20/20"
     },
     "17": {
         "name": "Michael Lee",
         "username": "@mikelee",
-        "img": "ml"
+        "img": "https://picsum.photos/20/20"
     },
     "18": {
         "name": "Emily Green",
         "username": "@emgreen",
-        "img": "eg"
+        "img": "https://picsum.photos/20/20"
     },
     "19": {
         "name": "David Wilson",
         "username": "@dwilson",
-        "img": "dw"
+        "img": "https://picsum.photos/20/20"
     },
     "20": {
         "name": "Anna Taylor",
         "username": "@annat",
-        "img": "at"
+        "img": "https://picsum.photos/20/20"
     },
     "21": {
         "name": "Chris Johnson",
         "username": "@chrisj",
-        "img": "cj"
+        "img": "https://picsum.photos/20/20"
     },
     "22": {
         "name": "Karen White",
         "username": "@kwhite",
-        "img": "kw"
+        "img": "https://picsum.photos/20/20"
     },
     "23": {
         "name": "Paul Martinez",
         "username": "@paulm",
-        "img": "pm"
+        "img": "https://picsum.photos/20/20"
     },
     "24": {
         "name": "Alice King",
         "username": "@alicek",
-        "img": "ak"
+        "img": "https://picsum.photos/20/20"
     },
     "25": {
         "name": "Lucas Scott",
         "username": "@lucass",
-        "img": "ls"
+        "img": "https://picsum.photos/20/20"
     },
     "26": {
         "name": "Nina Ross",
         "username": "@ninar",
-        "img": "nr"
+        "img": "https://picsum.photos/20/20"
     },
     "27": {
         "name": "Oliver Brooks",
         "username": "@oliverb",
-        "img": "ob"
+        "img": "https://picsum.photos/20/20"
     },
     "28": {
         "name": "Sophia Evans",
         "username": "@sophiae",
-        "img": "se"
+        "img": "https://picsum.photos/20/20"
     },
     "29": {
         "name": "Ethan Bell",
         "username": "@ethanb",
-        "img": "eb"
+        "img": "https://picsum.photos/20/20"
     },
     "30": {
         "name": "Grace Adams",
         "username": "@gracea",
-        "img": "ga"
+        "img": "https://picsum.photos/20/20"
     },
     "31": {
         "name": "Jacob Carter",
         "username": "@jacobc",
-        "img": "jc"
+        "img": "https://picsum.photos/20/20"
     }
 }
 
 
-// Pagination route
-// router.get('/issues', (req, res) => {
-//     const page = parseInt(req.query.page) || 1; // Default to page 1
-//     console.log("req query is"+page)
-//     const limit = 6; // 6 issues per page
-//     const startIndex = (page - 1) * limit;
-//     const endIndex = page * limit;
-
-//     // Paginated results
-//     const results = issues.slice(startIndex, endIndex).map(issue => {
-//         // Include user details in each issue
-//         const user = users[issue.userid];
-//         return { ...issue, user };
-//     });
-
-//     res.json({
-//         currentPage: page,
-//         totalPages: Math.ceil(issues.length / limit),
-//         data: results
-//     });
-// });
 
 
 router.get('/issues', (req, res) => {
@@ -187,37 +168,90 @@ router.get('/issues', (req, res) => {
     const filterValue = req.query.filter || ''; // Default to an empty string if not provided
    
     // Filter the issues based on the search and filter values
-    let filteredIssues = issues;
+    let filteredIssues = issues; // Assuming issues is your data source
+    console.log(page + "" + searchValue + "" + filterValue);
 
-    // Search logic: Check if searchValue is present in issue title or description
+    // Search logic
     if (searchValue) {
-        console.log(page+""+searchValue+""+filterValue)
         filteredIssues = filteredIssues.filter(issue =>
-            users[issue.userid].name.toLowerCase().includes(searchValue.toLowerCase())||
-            users[issue.userid].username.toLowerCase().includes(searchValue.toLowerCase())||
-        
+            users[issue.userid].name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            users[issue.userid].username.toLowerCase().includes(searchValue.toLowerCase()) ||
             issue.description.toLowerCase().includes(searchValue.toLowerCase())
         );
     }
 
-    // Filter logic: Check if the filterValue matches the issue status
+    // Filter logic
     if (filterValue) {
         filteredIssues = filteredIssues.filter(issue => issue.status.toLowerCase() === filterValue.toLowerCase());
     }
 
-    // Paginate the filtered results
-    const paginatedResults = filteredIssues.slice(startIndex, endIndex).map(issue => {
-        // Include user details in each issue
+    // Remove duplicates based on issue ID
+    const uniqueIssues = Array.from(new Set(filteredIssues.map(issue => issue._id)))
+        .map(id => filteredIssues.find(issue => issue._id === id));
+
+    // Paginate the unique results
+    const paginatedResults = uniqueIssues.slice(startIndex, endIndex).map(issue => {
         const user = users[issue.userid];
         return { ...issue, user };
     });
 
     res.json({
         currentPage: page,
-        totalPages: Math.ceil(filteredIssues.length / limit),
+        totalPages: Math.ceil(uniqueIssues.length / limit),
+        totalIssues: uniqueIssues.length,
         data: paginatedResults
     });
 });
+
+
+
+
+router.get('/User/issues', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const limit = 6; // 6 issues per page
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    // Get search, filter, and userId values from the query parameters
+    const searchValue = req.query.search || ''; // Default to an empty string if not provided
+    const filterValue = req.query.filter || ''; // Default to an empty string if not provided
+    const userId = req.query.userId; // Get userId from query
+
+    try {
+        // Build the query for fetching issues
+        const query = { userId };
+
+        // If searchValue is provided, modify the query to include search in description
+        if (searchValue) {
+            query.description = { $regex: searchValue, $options: 'i' }; // Case-insensitive search
+        }
+
+        // If filterValue is provided, add status filter
+        if (filterValue) {
+            query.status = filterValue;
+        }
+
+        // Fetch the issues from MongoDB
+        const filteredIssues = await Issue.find(query)
+            .skip(startIndex)
+            .limit(limit)
+            .populate('userId', 'name username img'); // Populate user details
+
+        // Count total matching issues for pagination
+        const totalIssues = await Issue.countDocuments(query);
+
+        res.json({
+            currentPage: page,
+            totalPages: Math.ceil(totalIssues / limit),
+            totalIssues,
+            data: filteredIssues,
+        });
+    } catch (error) {
+        console.error('Error fetching issues:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 
 
 
